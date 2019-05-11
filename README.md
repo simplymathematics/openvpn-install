@@ -56,8 +56,8 @@ A default set of variables will then be set, by passing the need for user input.
 
 If you want to customise your installation, you can export them or specify them on the same line, as shown above.
 
--  LAYER_CHOICE=2
-- `APPROVE_INSTALL=y`
+- `APPROVE_INSTALL=y
+- `LAYER_CHOICE=2``
 - `APPROVE_IP=y`
 - `IPV6_SUPPORT=n`
 - `PORT_CHOICE=1`
