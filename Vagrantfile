@@ -27,6 +27,7 @@ Vagrant.configure('2') do |config|
 
       machineconfig.vm.provision 'shell', inline: <<-SHELL
         AUTO_INSTALL=y /vagrant/openvpn-install.sh
+        sudo systemctl start openvpn
         ps aux | grep openvpn | grep -v grep > /dev/null 2>&1 && echo "Success: OpenVPN is running" && exit 0 || echo "Failure: OpenVPN is not running" && exit 1
       SHELL
     end
