@@ -201,6 +201,18 @@ function installQuestions () {
 	if [[ $APPROVE_IP =~ n ]]; then
 		read -rp "IP address: " -e -i "$IP" IP
 	fi
+
+	case $LAYER_CHOICE in
+	1)
+		echo "Use and ethernet cord for a layer 1 tunnel."
+	;;
+	2)
+		LAYER_CHOICE="tap"
+	;;
+	3)
+		LAYER_CHOICE="tun"
+		;;
+	esac
 	# If $IP is a private IP address, the server must be behind NAT
 	if echo "$IP" | grep -qE '^(10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.|192\.168)'; then
 		echo ""
@@ -615,6 +627,11 @@ function installOpenVPN () {
 			wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg | apt-key add -
 			apt-get update
 		fi
+		if [[ "$VERSION_ID" = "18.04" ]]; then
+			echo "deb http://build.openvpn.net/debian/openvpn/stable trusty main" > /etc/apt/sources.list.d/openvpn.list
+			wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg | apt-key add -
+			apt-get update
+		fi
 		# Ubuntu > 16.04 and Debian > 8 have OpenVPN >= 2.4 without the need of a third party repository.
 		apt-get install -y openvpn iptables openssl wget ca-certificates curl
 	elif [[ "$OS" = 'centos' ]]; then
@@ -705,9 +722,10 @@ function installOpenVPN () {
 	if [["$LAYER_CHOICE" = '2']]; then
 		echo "dev tap"
 	elif [["$LAYER_CHOICE" = '3']]; then
+		echo "$"
 		echo "dev tun"
 	fi
-	echo "dev tap
+	echo "local $ip
 user nobody
 group $NOGROUP
 persist-key
@@ -936,6 +954,8 @@ WantedBy=multi-user.target" > /etc/systemd/system/iptables-openvpn.service
 	if [[ "$ENDPOINT" != "" ]]; then
 		IP=$ENDPOINT
 	fi
+
+
 
 	# client-template.txt is created so we have a template to add further users later
 	echo "client" > /etc/openvpn/client-template.txt
