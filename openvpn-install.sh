@@ -614,7 +614,7 @@ function installOpenVPN () {
 
 	if [[ "$OS" =~ (debian|ubuntu) ]]; then
 		apt-get update
-		apt-get -y install ca-certificates gnupg
+		apt-get -y install ca-certificates gnupg easy-rsa
 		# We add the OpenVPN repo to get the latest version.
 		if [[ "$VERSION_ID" = "8" ]]; then
 			echo "deb http://build.openvpn.net/debian/openvpn/stable jessie main" > /etc/apt/sources.list.d/openvpn.list
@@ -719,11 +719,11 @@ function installOpenVPN () {
 		echo "proto ${PROTOCOL}6" >> /etc/openvpn/server.conf
 	fi
 	if [["$LAYER_CHOICE" = '2']]; then
-		echo "dev tap"
-		echo "server-bridge $IP 255.255.255.0 10.8.0.0 10.8.255.255"
+		echo "dev tap"  >> /etc/openvpn/server.conf
+		echo "server-bridge $IP 255.255.255.0 10.8.0.0 10.8.255.255"  >> /etc/openvpn/server.conf
 	elif [["$LAYER_CHOICE" = '3']]; then
-		echo "dev tun"
-		echo "server 10.8.0.0 255.255.255.0"
+		echo "dev tun"  >> /etc/openvpn/server.conf
+		echo "server 10.8.0.0 255.255.255.0"  >> /etc/openvpn/server.conf
 	else
 		echo "LAYER_CHOICE"
 	fi
