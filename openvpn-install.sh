@@ -605,7 +605,6 @@ function installOpenVPN () {
 		# Behind NAT, we'll default to the publicly reachable IPv4.
 		PUBLIC_IPV4=$(curl ifconfig.co)
 		ENDPOINT=${ENDPOINT:-$PUBLIC_IPV4}
-	fi
 
 	# Run setup questions first, and set other variales if auto-install
 	installQuestions
@@ -721,18 +720,20 @@ function installOpenVPN () {
 	fi
 	if [["$LAYER_CHOICE" = '2']]; then
 		echo "dev tap"
+		echo "server-bridge $IP 255.255.255.0 10.8.0.0 10.8.255.255"
 	elif [["$LAYER_CHOICE" = '3']]; then
-		echo "$"
 		echo "dev tun"
+		echo "server 10.8.0.0 255.255.255.0"
+	else
+		echo "LAYER_CHOICE"
 	fi
-	echo "local $ip
+	echo "local $IP
 user nobody
 group $NOGROUP
 persist-key
 persist-tun
 keepalive 10 120
 topology subnet
-server 10.8.0.0 255.255.255.0
 ifconfig-pool-persist ipp.txt" >> /etc/openvpn/server.conf
 
 	# DNS resolvers
@@ -1223,7 +1224,7 @@ function removeOpenVPN () {
 function manageMenu () {
 	clear
 	echo "Welcome to OpenVPN-install!"
-	echo "The git repository is available at: https://github.com/angristan/openvpn-install"
+	echo "The git repository is available at: https://github.com/simplymathematics/openvpn-install"
 	echo ""
 	echo "It looks like OpenVPN is already installed."
 	echo ""
